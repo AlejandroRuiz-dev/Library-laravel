@@ -1,0 +1,27 @@
+<?php
+
+namespace APP\CustomClasses;
+
+class Token  
+{
+   private $key;
+   private $data;
+   private $algorithm;
+
+   public function __construct($data = null)
+   {
+       $this->key = 'sdfbsldvjba|xvcbasd¬gjbvasdg#jkasdlvhaskd';
+       $this->data = $data;
+       $this->algorithm = array('HS256');
+   }
+   
+   public function encode()
+   {
+       return $token = JWT::encode($this->data, $this->key);
+   }
+
+   public function decode($token)
+   {
+       return JWT::decode($token, $this->key, $this->algorithm);
+   }
+}
