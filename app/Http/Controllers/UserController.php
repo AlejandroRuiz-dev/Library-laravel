@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\CustomClasses\Token;
 use App\User;
 use Illuminate\Http\Request;
 use Firebase\JWT\JWT;
@@ -12,18 +13,15 @@ class UserController extends Controller
     private $key = "asfhmvasdjhfgaskdfgsa,dgfsadkfaksdfaskjdfgj";
 
     public function login(Request $request)
-    {
+    {    
         $users = User::all();
 
         foreach ($users as $key => $user) {
             if ($user->email = $request->email) {
-                var_dump("exitoso");
-                $data_token = ["email"=>$user->email];
-
-                $token = JWT::encode($data_token, $this->key); 
+                $data_token = new Token($request->email);
+                return response()->json(["token"=>$data_token->encode()], 201);
             }
-        }
-        return response()->json(["token"=>$token], 201);
+        }   
     }
     /**
      * Display a listing of the resource.
@@ -62,7 +60,7 @@ class UserController extends Controller
         
 
         $data_token = ["email"=>$user->email];
-
+        
         $token = JWT::encode($data_token, $this->key);
 
         return response()->json(["token"=>$token], 201);

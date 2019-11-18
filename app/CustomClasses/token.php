@@ -1,7 +1,8 @@
 <?php
 
-namespace APP\CustomClasses;
+namespace App\CustomClasses;
 
+use Firebase\JWT\JWT;
 class Token  
 {
    private $key;
