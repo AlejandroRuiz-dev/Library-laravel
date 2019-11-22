@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
-use  App\Http\Middleware\CheckAdmin;
+use  App\Http\Middleware\CheckAuth;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -13,14 +13,10 @@ use  App\Http\Middleware\CheckAdmin;
 |
 */
 
-
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
 Route::apiResource('users', 'UserController');
-Route::apiResource('books', 'BookController');
 Route::post('login', 'UserController@login');
 
-Route::get('admin/profile', function () {
-    //
-})->middleware(CheckAdmin::class);
+Route::group(['middleware' => ['auth']], function () {
+    Route::apiResource('books', 'BookController');    
+    Route::post('lend', 'UserController@lend');
+});
