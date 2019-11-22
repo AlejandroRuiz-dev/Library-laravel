@@ -4,24 +4,36 @@ namespace App\Http\Controllers;
 
 use App\CustomClasses\Token;
 use App\User;
+use App\Book;
 use Illuminate\Http\Request;
 use Firebase\JWT\JWT;
 
 class UserController extends Controller
 {
-
-    private $key = "asfhmvasdjhfgaskdfgsa,dgfsadkfaksdfaskjdfgj";
-
     public function login(Request $request)
     {    
-        $users = User::all();
+        if ($request->email != null) 
+        {
+            $user = User::where('email', $request->email)->first();
+        }
+        else 
+        {
+            return response()->json(['message' => 'No has enviado el email'], 401);    
+        }
+        if ($user->password == $request->password)
+        {
+            $data_token = new Token(['email' => $user->email]);
+            $data_token = $data_token->encode();
+            return response()->json(["token"=>$data_token], 201);
+        }      
+        return response()->json(['message' => 'No registrado'], 401);    
+    }
 
-        foreach ($users as $key => $user) {
-            if ($user->email = $request->email) {
-                $data_token = new Token($request->email);
-                return response()->json(["token"=>$data_token->encode()], 201);
-            }
-        }   
+    public function lend(Request $request)
+    {
+        $user = User::find($request->user_id);
+        $book = Book::find($request->book_id);
+        $user->books()->attach($book);
     }
     /**
      * Display a listing of the resource.
@@ -56,14 +68,13 @@ class UserController extends Controller
         $user->email = $request->email;
         $user->password = $request->password;
         $user->save();
-
         
-
         $data_token = ["email"=>$user->email];
         
-        $token = JWT::encode($data_token, $this->key);
+        $token = new Token($data_token);
+        $token = $token->encode();
 
-        return response()->json(["token"=>$token], 201);
+        return response()->json(["token"=> $token], 201);
     }   
 
     /**
