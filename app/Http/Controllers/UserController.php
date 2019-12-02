@@ -31,7 +31,12 @@ class UserController extends Controller
 
     public function lend(Request $request)
     {
-        $user = User::find($request->user_id);
+        $token = new Token();
+        $header = $request->header("Authorization"); 
+
+        $data_token = $token->decode($header);
+
+        $user = User::where('email', $data_token->email)->first();
         $book = Book::find($request->book_id);
         $user->books()->attach($book);
     }

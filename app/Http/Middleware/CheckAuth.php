@@ -22,7 +22,14 @@ class CheckAuth
         
         if ($header != null) 
         {
-            $decodedToken = $token->decode($header);
+            try 
+            {
+                $decodedToken = $token->decode($header);
+            } 
+            catch (\Throwable $th) {
+                return response()->json(['error' => $th], 401);
+
+            }
             //$user_email = $decodedToken->email;
             //$user = User::where('email', $user_email)->first();
         }
