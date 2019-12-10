@@ -50,7 +50,11 @@ class BookController extends Controller
      */
     public function show($id)
     {
-        //
+        
+        $books = Book::all();
+        foreach ($books as $key => $value) {
+            return response()->json(['Libro creado' => $value], 201);;
+        }
     }
 
     /**

@@ -37,8 +37,9 @@ class UserController extends Controller
         $data_token = $token->decode($header);
 
         $user = User::where('email', $data_token->email)->first();
-        $book = Book::find($request->book_id);
+        $book = Book::where('title', $request->title)->first();
         $user->books()->attach($book);
+        return response()->json(['Message' => 'Libro Prestado']);    
     }
     /**
      * Display a listing of the resource.
@@ -89,8 +90,11 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {
-        //
+    {        
+        $users = User::all();
+        foreach ($users as $key => $value) {
+            return response()->json(['Users' => $value]);
+        }
     }
 
     /**
